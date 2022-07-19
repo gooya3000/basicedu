@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="site.shoppingBasket.ShoppingBasketMapper">
+
+	<sql id="shoppingBasket-where">
+		<where>
+			<if test='id != null and id != ""'>
+				<![CDATA[	ID = #{id}	]]>
+			</if>
+			<if test='shoppingBasketNoArr != null and shoppingBasketNoArr != ""'>
+				<![CDATA[	AND SHOPPING_BASKET_NO IN	]]>
+				<foreach collection="shoppingBasketNoArr" item="shoppingBasketNo"  open="(" close=")" separator=",">
+					#{shoppingBasketNo}
+		        </foreach>
+			</if>
+		</where>
+	</sql>
+
+	<select id="countShoppingBasket" parameterType="shoppingBasketVO" resultType="long">
+		<![CDATA[
+		SELECT COUNT(*) CNT
+		FROM SHOPPING_BASKET
+		]]>
+		<include refid="shoppingBasket-where" />
+	</select>
+
+	<resultMap id="shoppingBasketResult" type="shoppingBasketVO">
+		<result property="shoppingBasketNo" column="SHOPPING_BASKET_NO" />
+		<result property="productNo" column="PRODUCT_NO" />
+		<result property="id" column="ID" />
+		<result property="quantity" column="QUANTITY" />
+		<result property="productPrice" column="PRODUCT_PRICE" />
+		<result property="registerDate" column="REGISTER_DATE" />
+		<result property="productStatus" column="PRODUCT_STATUS" />
+
+		<result property="productName" column="PRODUCT_NAME" />
+		<result property="imgFileName" column="IMG_FILE_NAME" />
+		<result property="price" column="PRICE" />
+	</resultMap>
+
+	<select id="findShoppingBasketList" parameterType="shoppingBasketVO" resultMap="shoppingBasketResult">
+		<![CDATA[
+		SELECT
+			A.SHOPPING_BASKET_NO
+			, A.PRODUCT_NO
+			, A.ID
+			, A.QUANTITY
+			, A.PRODUCT_PRICE
+			, A.REGISTER_DATE
+			, CASE
+				WHEN B.QUANTITY = 0 THEN 'soldOut'
+				WHEN B.QUANTITY < A.QUANTITY THEN 'update'
+				ELSE
+					CASE
+						WHEN B.PRICE != A.PRODUCT_PRICE THEN 'update'
+						ELSE ''
+					END
+				END AS PRODUCT_STATUS
+			, B.PRODUCT_NAME
+			, B.IMG_FILE_NAME
+			, B.PRICE
+		FROM SHOPPING_BASKET A
+		INNER JOIN PRODUCT B ON B.PRODUCT_NO = A.PRODUCT_NO
+		]]>
+		<include refid="shoppingBasket-where" />
+		<![CDATA[
+		ORDER BY REGISTER_DATE DESC
+		]]>
+	</select>
+
+	<insert id="saveShoppingBasket" parameterType="shoppingBasketVO">
+		<![CDATA[
+		INSERT INTO SHOPPING_BASKET (
+			PRODUCT_NO
+			, ID
+			, QUANTITY
+			, REGISTER_DATE
+			, PRODUCT_PRICE
+		) VALUES (
+			#{productNo}
+			, #{id}
+			, #{quantity}
+			, NOW()
+			, #{productPrice}
+		)
+		]]>
+	</insert>
+
+	<delete id="deleteShoppingBasket" parameterType="shoppingBasketVO">
+		<![CDATA[
+		DELETE FROM SHOPPING_BASKET
+		WHERE SHOPPING_BASKET_NO = #{shoppingBasketNo}
+		]]>
+	</delete>
+</mapper>
+
+

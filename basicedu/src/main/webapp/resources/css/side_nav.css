@@ -1,0 +1,32 @@
+section{
+  margin-top: 30px;
+  width: 250px;
+  height: 480px;
+  border-radius: 10px;
+  text-align: center;
+  box-shadow:  1px 1px 12px 1px rgba(0, 0, 0, 0.1);
+  padding: 5px;
+  float: left;
+}
+.my_page_h2{
+  padding-top: 30px;
+  padding-bottom: 30px;
+  font-weight: 500;
+  font-size: 20px;
+  width: 100%;
+  border-bottom: 1px solid #ddd;
+  margin-bottom: 50px;
+
+
+}
+
+.sd_nav_li{
+  padding: 17px;
+}
+
+.my_on{
+  font-weight: 500;
+  background-color: #000;
+  color: #fff;
+
+}

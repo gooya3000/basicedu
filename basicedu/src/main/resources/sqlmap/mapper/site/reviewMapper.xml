@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="site.mypage.review.ReviewMapper">
+
+	<sql id="review-where">
+		<where>
+			<if test='keyNo !=null and keyNo != ""'>
+				<![CDATA[	KEY_NO = #{keyNo}	]]>
+			</if>
+			<if test='keySection !=null and keySection != ""'>
+				<![CDATA[	AND KEY_SECTION = #{keySection}	]]>
+			</if>
+		</where>
+	</sql>
+
+	<select id="countReview" parameterType="reviewVO" resultType="long">
+		<![CDATA[
+		SELECT COUNT(*) CNT
+		FROM REVIEW
+		]]>
+		<include refid="review-where" />
+	</select>
+
+	<resultMap id="reviewResult" type="reviewVO">
+		<result property="reviewNo" column="REVIEW_NO" />
+		<result property="keyNo" column="KEY_NO" />
+		<result property="keySection" column="KEY_SECTION" />
+		<result property="id" column="ID" />
+		<result property="contents" column="CONTENTS" />
+		<result property="registerDate" column="REGISTER_DATE" />
+	</resultMap>
+
+	<select id="findReviewList" parameterType="reviewVO" resultMap="reviewResult">
+		<![CDATA[
+		SELECT
+			A.REVIEW_NO
+			, A.KEY_NO
+			, A.KEY_SECTION
+			, A.ID
+			, A.CONTENTS
+			, A.REGISTER_DATE
+		FROM REVIEW A
+		]]>
+		<if test='keySection == "P"'>
+			<![CDATA[	INNER JOIN PRODUCT_ORDER B ON B.ORDER_NO = A.KEY_NO	]]>
+			<if test='productNo != null and productNo != ""'>
+				<![CDATA[	AND B.PRODUCT_NO = #{productNo}	]]>
+			</if>
+		</if>
+		<include refid="review-where" />
+		<![CDATA[
+		ORDER BY A.REGISTER_DATE DESC
+		]]>
+	</select>
+
+	<select id="findReview" parameterType="reviewVO" resultMap="reviewResult">
+		<![CDATA[
+		SELECT
+			REVIEW_NO
+			, KEY_NO
+			, KEY_SECTION
+			, ID
+			, CONTENTS
+			, REGISTER_DATE
+		FROM REVIEW
+		WHERE REVIEW_NO = #{reviewNo}
+		]]>
+	</select>
+
+	<insert id="saveReview" parameterType="reviewVO">
+		<![CDATA[
+		INSERT INTO REVIEW (
+			KEY_NO
+			, KEY_SECTION
+			, ID
+			, CONTENTS
+			, REGISTER_DATE
+		) VALUES (
+			#{keyNo}
+			, #{keySection}
+			, #{id}
+			, #{contents}
+			, NOW()
+		)
+		]]>
+	</insert>
+
+	<update id="modifyReview" parameterType="reviewVO">
+		<![CDATA[
+		UPDATE REVIEW SET
+			CONTENTS = #{contents}
+		WHERE ID = #{id}
+		  AND REVIEW_NO = #{reviewNo}
+		]]>
+	</update>
+
+	<delete id="deleteReview" parameterType="reviewVO">
+		<![CDATA[
+		DELETE FROM REVIEW
+		WHERE REVIEW_NO = #{reviewNo}
+		]]>
+		<if test='id != "admin"'>
+			<![CDATA[	AND ID = #{id}	]]>
+		</if>
+	</delete>
+</mapper>

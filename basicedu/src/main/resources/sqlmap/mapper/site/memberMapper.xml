@@ -1,0 +1,234 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="site.member.MemberMapper">
+
+	<sql id="member-where">
+		<if test='keyword != null and keyword != ""'>
+			<if test='searchSe != null and searchSe !=""'>
+				<if test='searchSe == "1"'>
+					<![CDATA[	AND ID LIKE CONCAT('%', TRIM(#{keyword}), '%')	]]>
+				</if>
+				<if test='searchSe == "2"'>
+					<![CDATA[	AND NAME LIKE CONCAT('%', TRIM(#{keyword}), '%')	]]>
+				</if>
+
+			</if>
+			<if test='searchSe == null || searchSe == ""'>
+				<![CDATA[	AND ID = #{keyword}	]]>
+			</if>
+		</if>
+		<if test='memberCategory != null and memberCategory != ""'>
+			<![CDATA[	AND MEMBER_CATEGORY = #{memberCategory}	]]>
+		</if>
+		<if test='searchSe == "3"'>
+					<![CDATA[	AND NAME LIKE CONCAT('%', TRIM(#{keyword}), '%')
+								OR ID LIKE 	CONCAT('%', TRIM(#{keyword}), '%')      ]]>
+		</if>
+	</sql>
+
+	<select id="countMember" parameterType="paramVO" resultType="long">
+		<![CDATA[
+		SELECT COUNT(*) CNT
+		FROM MEMBER_INFO
+		WHERE DELETE_AT = 'N'
+		]]>
+		<include refid="member-where" />
+	</select>
+
+	<resultMap id="memberResult" type="memberVO">
+		<result property="id" column="ID" />
+		<result property="memberCategory" column="MEMBER_CATEGORY" />
+		<result property="name" column="NAME" />
+		<result property="password" column="PASSWORD" />
+		<result property="address" column="ADDRESS" />
+		<result property="phoneNumber" column="PHONE_NUMBER" />
+		<result property="email" column="EMAIL" />
+		<result property="lecturerImg" column="LECTURER_IMG" />
+		<result property="lecturerInfo" column="LECTURER_INFO" />
+		<result property="registerDate" column="REGISTER_DATE" />
+		<result property="deleteAt" column="DELETE_AT" />
+		<result property="point" column="POINT" />
+		<result property="authkey" column="AUTHKEY" />
+		<result property="authstatus" column="AUTHSTATUS" />
+	</resultMap>
+
+	<select id="selectMember" resultMap="memberResult">
+		SELECT *
+		FROM MEMBER_INFO
+	</select>
+
+	<select id="findMemberList" parameterType="paramVO" resultMap="memberResult">
+		<![CDATA[
+		SELECT *
+		FROM (
+			SELECT @RN:=@RN+1 AS RNUM, A.*
+			FROM (
+				SELECT
+					ID
+					, MEMBER_CATEGORY
+					, NAME
+					, PASSWORD
+					, ADDRESS
+					, PHONE_NUMBER
+					, EMAIL
+					, LECTURER_IMG
+					, LECTURER_INFO
+					, REGISTER_DATE
+					, DELETE_AT
+					, POINT
+				FROM MEMBER_INFO
+				WHERE DELETE_AT = 'N'
+		]]>
+		<include refid="member-where" />
+		<![CDATA[
+				ORDER BY REGISTER_DATE DESC
+			) A
+		) A
+		limit #{firstRecordIndex}, #{recordCountPerPage}
+		]]>
+	</select>
+
+	<select id="findMember" parameterType="memberVO" resultMap="memberResult">
+		<![CDATA[
+		SELECT
+			ID
+			, MEMBER_CATEGORY
+			, NAME
+			, PASSWORD
+			, ADDRESS
+			, PHONE_NUMBER
+			, EMAIL
+			, LECTURER_IMG
+			, LECTURER_INFO
+			, REGISTER_DATE
+			, DELETE_AT
+			, POINT
+		FROM MEMBER_INFO
+		WHERE ID = #{id}
+		]]>
+	</select>
+
+	<insert id="saveMember" parameterType="memberVO">
+		<![CDATA[
+		INSERT INTO MEMBER_INFO (
+			ID
+			, MEMBER_CATEGORY
+			, NAME
+			, PASSWORD
+			, ADDRESS
+			, PHONE_NUMBER
+			, EMAIL
+			, LECTURER_IMG
+			, LECTURER_INFO
+			, REGISTER_DATE
+			, DELETE_AT
+			, POINT
+		) VALUES (
+			#{id}
+			, #{memberCategory}
+			, #{name}
+			, #{password}
+			, #{address}
+			, #{phoneNumber}
+			, #{email}
+			, #{lecturerImg}
+			, #{lecturerInfo}
+			, NOW()
+			, 'N'
+			, 0
+		)
+		]]>
+	</insert>
+
+	<update id="modifyMember" parameterType="memberVO">
+		<![CDATA[
+		UPDATE MEMBER_INFO SET
+			NAME = #{name}
+			, PASSWORD = #{password}
+			, ADDRESS = #{address}
+			, PHONE_NUMBER = #{phoneNumber}
+			, EMAIL = #{email}
+			, LECTURER_IMG = #{lecturerImg}
+			, LECTURER_INFO = #{lecturerInfo}
+		WHERE ID = #{id}
+		]]>
+	</update>
+
+	<update id="deleteMember" parameterType="memberVO">
+		<![CDATA[
+		UPDATE MEMBER_INFO SET
+			DELETE_AT = 'Y'
+		WHERE ID = #{id}
+		]]>
+	</update>
+
+	<select id="nowPoint" resultType="Integer" parameterType="String">
+		SELECT POINT
+		FROM MEMBER_INFO
+		WHERE ID = #{id}
+	</select>
+
+	<update id="updatePoint" parameterType="memberVO">
+		UPDATE MEMBER_INFO SET
+			POINT = #{point}
+		WHERE ID = #{id}
+	</update>
+
+	<select id="passwordCheck" parameterType="memberVO" resultType="java.lang.String">
+		SELECT PASSWORD FROM MEMBER_INFO WHERE ID =#{id}
+	</select>
+
+	<update id="updateAction" parameterType="memberVO">
+			UPDATE MEMBER_INFO SET
+			NAME = #{name}
+			, ADDRESS = #{address}
+			, PHONE_NUMBER = #{phoneNumber}
+			, EMAIL = #{email}
+			, LECTURER_IMG = #{lecturerImg}
+			, LECTURER_INFO = #{lecturerInfo}
+		WHERE ID = #{id}
+
+	</update>
+
+	<update id="updateAction1" parameterType="memberVO">
+			UPDATE MEMBER_INFO SET
+			NAME = #{name}
+			, ADDRESS = #{address}
+			, PHONE_NUMBER = #{phoneNumber}
+			, EMAIL = #{email}
+			, LECTURER_INFO = #{lecturerInfo}
+		WHERE ID = #{id}
+
+	</update>
+
+	<update id="passwordUpdate" parameterType="memberVO">
+		UPDATE MEMBER_INFO SET
+		PASSWORD =#{password}
+		WHERE ID = #{id}
+	</update>
+
+	<select id="memberInfo" parameterType="java.lang.String" resultMap="memberResult">
+		SELECT ADDRESS
+			, PHONE_NUMBER
+			, EMAIL
+			, ID
+			, NAME
+			, MEMBER_CATEGORY
+			, LECTURER_IMG
+			, LECTURER_INFO
+			FROM MEMBER_INFO
+			WHERE ID=#{id}
+	</select>
+
+
+	<select id="findMemberOne" parameterType="java.lang.String" resultMap="memberResult">
+		SELECT *
+		FROM MEMBER_INFO
+		WHERE ID = #{id}
+	</select>
+	<select id="findLecturerImg" parameterType="java.lang.String" resultType="java.lang.String">
+		SELECT LECTURER_IMG FROM MEMBER_INFO WHERE ID =#{id}
+	</select>
+
+</mapper>

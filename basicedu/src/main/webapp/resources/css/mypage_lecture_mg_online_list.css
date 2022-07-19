@@ -1,0 +1,66 @@
+#contents{
+  padding-bottom: 200px;
+}
+.my_page_contents{
+  float: left;
+  margin-top: 40px;
+  border-radius: 10px;
+  margin-left: 20px;
+  box-shadow:  1px 1px 12px 1px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  width: 864px;
+}
+.lecture_ch{
+  margin-left: 540px;
+
+}
+.lecture_ch_li{
+  float: left;
+  width: 150px;
+  height: 40px;
+  border-radius: 5px;
+  border: 1px solid #ddd;
+  text-align: center;
+  line-height: 40px;
+  margin-left: 10px;
+  color: #999;
+}
+.mg_on{
+  /* background-color: #f6f6f6; */
+  font-weight: 700;
+  border: 1px solid #000;
+  color: #000;
+}
+.onlec_mg_list{
+
+  margin-top: 50px;
+}
+.onlec_regi_btn{
+  width: 100%;
+  height: 50px;
+  border-radius: 5px;
+  background-color: rgb(255,217,102);/*�끂�옉*/
+  box-shadow:  1px 1px 12px 1px rgba(0, 0, 0, 0.1);
+  font-size: 18px;
+  font-weight: 900;
+  cursor: pointer;
+}
+.h4h4{
+  margin-top: 60px;
+  text-align: center;
+}
+.onlec_mg_list_table{
+  width: 100%;
+  text-align: center;
+  margin-top: 30px;
+  margin-bottom: 60px;
+}
+.onlec_mg_list_th{
+  padding: 10px;
+  border: 1px solid #ddd;
+}
+
+.onlec_mg_list_td{
+  padding: 10px;
+    border: 1px solid #ddd;
+}

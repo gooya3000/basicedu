@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:security="http://www.springframework.org/schema/security"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+	http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
+	http://www.springframework.org/schema/security
+	http://www.springframework.org/schema/security/spring-security.xsd">
+
+	<security:http pattern="/resources/**" security="none" />
+	<security:http pattern="/upload/**" security="none" />
+
+	<!-- 관리자 -->
+	<security:http pattern="/admin/**" auto-config="true" use-expressions="true" authentication-manager-ref="adminManager">
+		<security:csrf disabled="true"/>
+
+		<security:intercept-url pattern="/admin/login**" access="permitAll"/>
+
+		<security:intercept-url pattern="/admin/**" access="hasRole('ROLE_ADMIN')"/>
+
+		<security:form-login login-page="/admin/login"
+			username-parameter="id"
+			password-parameter="password"
+			login-processing-url="/admin/loginAction"
+			authentication-failure-url="/admin/login?error=true"
+			default-target-url="/admin/member/list"
+		/>
+
+		<security:logout invalidate-session="true" logout-url="/admin/logout" logout-success-url="/admin/login" />
+	</security:http>
+
+	<security:http pattern="/**" auto-config="true" use-expressions="true" authentication-manager-ref="userManager">
+		<security:csrf disabled="true"/>
+
+		<security:intercept-url pattern="/member/**" access="permitAll"/>
+		<security:intercept-url pattern="/store/**" access="permitAll"/>
+
+		<!-- 강사회원 -->
+		<security:intercept-url pattern="/mypage/product/**" access="hasRole('ROLE_TEACHER')"/>
+		<security:intercept-url pattern="/mypage/online/onlec**" access="hasRole('ROLE_TEACHER')"/>
+
+		<!-- 일반회원, 강사회원 -->
+		<security:intercept-url pattern="/mypage/**/**" access="hasAnyRole('ROLE_USER, ROLE_TEACHER')"/>
+		<security:intercept-url pattern="/shoppingBasket/**" access="hasAnyRole('ROLE_USER, ROLE_TEACHER')"/>
+		<security:intercept-url pattern="/order/**" access="hasAnyRole('ROLE_USER, ROLE_TEACHER')"/>
+		<security:intercept-url pattern="/onlineClass/apply/**" access="hasAnyRole('ROLE_USER, ROLE_TEACHER')"/>
+		<security:intercept-url pattern="/mypage/online/myOnline**" access="hasAnyRole('ROLE_USER, ROLE_TEACHER')"/>
+
+		<security:form-login login-page="/member/login"
+			username-parameter="id"
+			password-parameter="password"
+			login-processing-url="/member/loginAction"
+			authentication-failure-handler-ref="userLoginFailHandler"
+			authentication-success-handler-ref="userLoginSuccessHandler"
+			/>
+
+		<security:logout invalidate-session="true" logout-url="/member/logout" logout-success-url="/" />
+	</security:http>
+
+	<bean id="userLoginFailHandler" class="site.member.handler.UserLoginFailHandler" />
+
+	<bean id="userLoginSuccessHandler" class="site.member.handler.UserLoginSuccessHandler" />
+
+	<bean id="bcryptPasswordEncoder" class="org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder" />
+
+    <security:authentication-manager id="userManager">
+    	<security:authentication-provider>
+    		<!--
+    		<security:user-service>
+                <security:user name="test1" authorities="ROLE_USER" password="1234"/>
+            </security:user-service>
+    		 -->
+    		<security:password-encoder hash="bcrypt" />
+    		<security:jdbc-user-service data-source-ref="dataSource"
+				users-by-username-query="SELECT ID AS username, PASSWORD, 1 AS ENABLED FROM MEMBER_INFO WHERE DELETE_AT = 'N' AND ID = ?"
+				authorities-by-username-query="SELECT ID AS username, IF(MEMBER_CATEGORY='1', 'ROLE_USER', 'ROLE_TEACHER') authority FROM MEMBER_INFO WHERE DELETE_AT = 'N' AND ID = ?" />
+    	</security:authentication-provider>
+    </security:authentication-manager>
+
+    <security:authentication-manager id="adminManager">
+    	<security:authentication-provider>
+    		<security:user-service>
+                <security:user name="admin" password="1234" authorities="ROLE_ADMIN"/>
+            </security:user-service>
+    	</security:authentication-provider>
+    </security:authentication-manager>
+
+</beans>

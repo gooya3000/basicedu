@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="site.point.PointMapper">
+
+	<insert id="insertHistory" parameterType="pointVO">
+		INSERT INTO POINT_HISTORY(
+			ID,
+			CONTENTS,
+       		POINT
+		)VALUES(
+			#{id},
+			#{contents},
+			#{point}
+		)
+	</insert>
+
+	<resultMap id="pointResult" type="pointVO">
+		<result property="id" column="ID" />
+		<result property="historyNo" column="HISTORY_NO" />
+		<result property="contents" column="CONTENTS" />
+		<result property="point" column="POINT" />
+
+	</resultMap>
+
+	<select id="pointHistory" parameterType="java.lang.String" resultMap="pointResult">
+		SELECT *
+		FROM POINT_HISTORY
+		WHERE ID = #{id}
+	</select>
+
+
+</mapper>

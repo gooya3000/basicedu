@@ -1,0 +1,28 @@
+header{
+  width: 100%;
+  height: 60px;
+  border-bottom: 1px solid #ddd;
+
+}
+
+.top_logo{
+  width: 120px;
+  position: absolute;
+  top: 3px;
+}
+
+.top_logo>a>img{
+  width: 100%;
+}
+.top_menu{
+  position: absolute;
+  right: 0;
+  top:15px;
+}
+.top_menu_li{
+  float: left;
+  color: #333;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  margin-left: 10px;
+}

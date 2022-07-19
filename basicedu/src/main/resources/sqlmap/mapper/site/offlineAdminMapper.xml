@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="site.admin.offline.OfflineAdminMapper">
+	<resultMap type="offlineAdminVO" id="offadminResult">
+		<result property="offline_lecture_NO" column="OFFLINE_LECTURE_NO"/>
+		<result property="offline_lecture_name" column="OFFLINE_LECTURE_NAME"/>
+		<result property="offline_lecture_introduce" column="OFFLINE_LECTURE_INTRODUCE"/>
+		<result property="offline_lecture_img" column="OFFLINE_LECTURE_IMG"/>
+		<result property="offline_lecture_address" column="OFFLINE_LECTURE_ADDRESS"/>
+		<result property="offline_lecture_min" column="OFFLINE_LECTURE_MIN"/>
+		<result property="offline_lecture_max" column="OFFLINE_LECTURE_MAX"/>
+		<result property="offline_lecture_applyperiodstart" column="OFFLINE_LECTURE_APPLYPERIODSTART"/>
+		<result property="offline_lecture_applyperiodend" column="OFFLINE_LECTURE_APPLYPERIODEND"/>
+		<result property="offline_lecture_schedule" column="OFFLINE_LECTURE_SCHEDULE"/>
+		<result property="offline_lecture_reg" column="OFFLINE_LECTURE_REG"/>
+		<result property="offline_lecture_id" column="OFFLINE_LECTURE_ID"/>
+
+		<result property="aplinum" column="APLINUM"/>
+		<result property="name" column="NAME"/>
+
+	</resultMap>
+
+	<select id="offlineList" parameterType="paramVO" resultMap="offadminResult">
+			<![CDATA[
+				SELECT *
+				FROM (
+					SELECT @RN:=@RN+1 AS RNUM, A.*
+					FROM (
+						SELECT B.OFFLINE_LECTURE_NAME
+						, B.OFFLINE_LECTURE_IMG
+						, B.OFFLINE_LECTURE_SCHEDULE
+						, B.OFFLINE_LECTURE_NO
+						, B.OFFLINE_LECTURE_MAX
+						, B.OFFLINE_LECTURE_MIN
+						, B.OFFLINE_LECTURE_APPLYPERIODSTART
+						, B.OFFLINE_LECTURE_APPLYPERIODEND
+						, B.OFFLINE_LECTURE_REG
+						, C.NAME
+						,(SELECT COALESCE(SUM(APPLICATION_NUMBER),0)
+						from OFFLINE_LECTURE_APPLICATION
+						WHERE OFFLINE_LECTURE_NO =B.OFFLINE_LECTURE_NO AND APPLICATION_STATUS= 1) AS APLINUM
+						FROM OFFLINE_LECTURE B
+						JOIN MEMBER_INFO C
+						ON B.ID = C.ID
+				]]>
+
+				<![CDATA[
+						ORDER BY OFFLINE_LECTURE_SCHEDULE ASC
+					) A
+				) A
+				limit #{firstRecordIndex}, #{recordCountPerPage}
+			]]>
+	</select>
+
+
+
+	<insert id="offlineAdd" parameterType="offlineAdminVO">
+		<![CDATA[
+		INSERT INTO OFFLINE_LECTURE (
+			 OFFLINE_LECTURE_NAME
+			, OFFLINE_LECTURE_INTRODUCE
+			, OFFLINE_LECTURE_IMG
+			, OFFLINE_LECTURE_ADDRESS
+			, OFFLINE_LECTURE_MIN
+			, OFFLINE_LECTURE_MAX
+			, OFFLINE_LECTURE_APPLYPERIODSTART
+			, OFFLINE_LECTURE_SCHEDULE
+			, OFFLINE_LECTURE_REG
+			, OFFLINE_LECTURE_APPLYPERIODEND
+			,ID
+		) VALUES (
+			#{offline_lecture_name}
+			, #{offline_lecture_introduce}
+			, #{offline_lecture_img}
+			, #{offline_lecture_address}
+			, #{offline_lecture_min}
+			, #{offline_lecture_max}
+			, STR_TO_DATE(#{offline_lecture_applyperiodstart},'%Y-%m-%d')
+			, STR_TO_DATE(#{offline_lecture_schedule}, '%Y-%m-%d')
+			, NOW()
+			, STR_TO_DATE(#{offline_lecture_applyperiodend},'%Y-%m-%d')
+			,#{id}
+		)
+		]]>
+	</insert>
+
+	<sql id="offline-search">
+		<where>
+			<if test='searchCondition != null and searchCondition != "" and searchCondition =="lecId"'>
+				<![CDATA[	ID LIKE CONCAT('%', TRIM(#{search_keyword}), '%')	]]>
+			</if>
+			<if test='searchCondition != null and searchCondition != "" and searchCondition =="lecName"'>
+				<![CDATA[	NAME LIKE CONCAT('%', TRIM(#{search_keyword}), '%')	]]>
+			</if>
+		</where>
+	</sql>
+
+	<resultMap id="memberResult" type="memberVO">
+		<result property="id" column="ID" />
+		<result property="memberCategory" column="MEMBER_CATEGORY" />
+		<result property="name" column="NAME" />
+		<result property="password" column="PASSWORD" />
+		<result property="address" column="ADDRESS" />
+		<result property="phoneNumber" column="PHONE_NUMBER" />
+		<result property="email" column="EMAIL" />
+		<result property="lecturerImg" column="LECTURER_IMG" />
+		<result property="lecturerInfo" column="LECTURER_INFO" />
+		<result property="registerDate" column="REGISTER_DATE" />
+		<result property="deleteAt" column="DELETE_AT" />
+		<result property="point" column="POINT" />
+	</resultMap>
+
+	<select id="findId" parameterType="offlineAdminVO" resultMap="memberResult">
+		SELECT ID, NAME, MEMBER_CATEGORY
+		FROM MEMBER_INFO
+		<include refid="offline-search" />
+	</select>
+
+	<sql id="offline-search2">
+		<where>
+			<if test='searchCondition != null and searchCondition != "" and searchCondition =="className"'>
+				<![CDATA[	OFFLINE_LECTURE_NAME LIKE CONCAT('%', TRIM(#{search_keyword}), '%')	]]>
+			</if>
+			<if test='searchCondition != null and searchCondition != "" and searchCondition =="lecName"'>
+				<![CDATA[	NAME LIKE CONCAT('%', TRIM(#{search_keyword}), '%')	]]>
+			</if>
+		</where>
+	</sql>
+
+	<select id="offlineSearch" parameterType="offlineAdminVO" resultMap="offadminResult">
+		SELECT A.OFFLINE_LECTURE_NAME
+			, A.OFFLINE_LECTURE_IMG
+			, A.OFFLINE_LECTURE_SCHEDULE
+			, A.OFFLINE_LECTURE_NO
+			, A.OFFLINE_LECTURE_MAX
+			, A.OFFLINE_LECTURE_MIN
+			, A.OFFLINE_LECTURE_APPLYPERIODSTART
+			, A.OFFLINE_LECTURE_APPLYPERIODEND
+			, A.OFFLINE_LECTURE_REG
+			, B.NAME
+			,(SELECT COALESCE(SUM(APPLICATION_NUMBER),0)
+			from OFFLINE_LECTURE_APPLICATION
+			WHERE OFFLINE_LECTURE_NO =A.OFFLINE_LECTURE_NO AND APPLICATION_STATUS= 1) AS APLINUM
+			FROM OFFLINE_LECTURE A
+			JOIN MEMBER_INFO B
+			ON A.ID = B.ID
+			<include refid="offline-search2" />
+	</select>
+
+</mapper>

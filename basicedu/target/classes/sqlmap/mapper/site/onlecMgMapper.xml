@@ -1,0 +1,250 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="site.mypage.lecturer.online.OnlecMgMapper">
+	<sql id="onlineLecture">
+		LECTURER_ID, ONLINE_LECTURE_NAME, ONLINE_LECTURE_INFO, IMG_FILE, PRICE, LIBRARY_FILE_ORG, LIBRARY_FILE_STR, REGISTER_DATE
+	</sql>
+	<sql id="onlineLectureVideo">
+		ONLINE_LECTURE_NO, CHAPTER_NO, VIDEO_NAME, VIDEO_INFO, VIDEO_FILE, VIDEO_FILE_ORG, REGISTER_DATE
+	</sql>
+
+	<insert id="registClass" parameterType="onlineVO">
+
+		INSERT INTO ONLINE_LECTURE (
+			<include refid="onlineLecture" />
+		) VALUES (
+			#{lecturerId}
+			, #{onlineLectureName}
+			, #{onlineLectureInfo}
+			, #{imgFile}
+			, #{price}
+			, #{libraryFileOrg}
+			, #{libraryFileStr}
+			, NOW()
+		)
+
+	</insert>
+
+	<insert id="registVideo" parameterType="onlineVO">
+
+		INSERT INTO ONLINE_LECTURE_VIDEO (
+			<include refid="onlineLectureVideo" />
+		) VALUES (
+			(SELECT ONLINE_LECTURE_NO
+			 FROM ONLINE_LECTURE
+			 WHERE REGISTER_DATE = (
+			 	SELECT MAX(REGISTER_DATE)
+			 	FROM ONLINE_LECTURE
+			 	WHERE LECTURER_ID = #{lecturerId}))
+			, #{chapterNo}
+			, #{videoName}
+			, #{videoInfo}
+			, #{videoFile}
+			, #{videoFileOrg}
+			, NOW()
+		)
+
+	</insert>
+
+	<select id="countLClass" parameterType="paramVO" resultType="long">
+		<![CDATA[
+		SELECT COUNT(*) CNT
+		FROM ONLINE_LECTURE
+
+		]]>
+		<if test='id != null and id != ""'>
+			<![CDATA[	WHERE LECTURER_ID = #{id}	]]>
+		</if>
+
+	</select>
+
+	<select id="searchSelectCount" parameterType="paramVO" resultType="long">
+
+		SELECT COUNT(*) CNT
+		FROM ONLINE_LECTURE O
+		JOIN MEMBER_INFO M
+		ON O.LECTURER_ID = M.ID
+		<if test='keyword != null and keyword != ""'>
+			<if test='searchSe != null and searchSe !=""'>
+				<if test='searchSe == "lecturerName"'>
+					<![CDATA[	WHERE M.NAME LIKE #{keyword}	]]>
+				</if>
+				<if test='searchSe == "className"'>
+					<![CDATA[	WHERE ONLINE_LECTURE_NAME LIKE #{keyword}	]]>
+				</if>
+			</if>
+		</if>
+
+	</select>
+
+	<resultMap id="onlecResult" type="onlineVO">
+		<result property="onlineLectureNo" column="ONLINE_LECTURE_NO" />
+		<result property="lecturerId" column="LECTURER_ID" />
+		<result property="onlineLectureName" column="ONLINE_LECTURE_NAME" />
+		<result property="onlineLectureInfo" column="ONLINE_LECTURE_INFO" />
+		<result property="imgFile" column="IMG_FILE" />
+		<result property="price" column="PRICE" />
+		<result property="libraryFileOrg" column="LIBRARY_FILE_ORG" />
+		<result property="libraryFileStr" column="LIBRARY_FILE_STR" />
+		<result property="registerDate" column="REGISTER_DATE" />
+		<result property="videoNo" column="VIDEO_NO" />
+		<result property="chapterNo" column="CHAPTER_NO" />
+		<result property="videoName" column="VIDEO_NAME" />
+		<result property="videoInfo" column="VIDEO_INFO" />
+		<result property="videoFile" column="VIDEO_FILE" />
+		<result property="videoFileOrg" column="VIDEO_FILE_ORG" />
+		<result property="name" column="NAME" />
+		<result property="lecturerImg" column="LECTURER_IMG" />
+		<result property="lecturerInfo" column="LECTURER_INFO" />
+	</resultMap>
+
+	<select id="selectAll" resultMap="onlecResult" parameterType="paramVO">
+
+			<![CDATA[
+				SELECT *
+				FROM (
+					SELECT @RN:=@RN+1 AS RNUM, A.*
+					FROM (
+						SELECT ONLINE_LECTURE_NO, LECTURER_ID, ONLINE_LECTURE_NAME, ONLINE_LECTURE_INFO, IMG_FILE, PRICE, LIBRARY_FILE_ORG, LIBRARY_FILE_STR, O.REGISTER_DATE, NAME, LECTURER_Img, LECTURER_INFO
+						FROM ONLINE_LECTURE O
+						JOIN MEMBER_INFO M
+						ON O.LECTURER_ID = M.ID
+				]]>
+
+				<![CDATA[
+						ORDER BY REGISTER_DATE DESC
+					) A
+				) A
+				limit #{firstRecordIndex}, #{recordCountPerPage}
+			]]>
+
+	</select>
+
+	<select id="searchSelect" parameterType="paramVO" resultMap="onlecResult">
+		<![CDATA[
+				SELECT *
+				FROM (
+					SELECT @RN:=@RN+1 AS RNUM, A.*
+					FROM (
+						SELECT ONLINE_LECTURE_NO, LECTURER_ID, ONLINE_LECTURE_NAME, ONLINE_LECTURE_INFO, IMG_FILE, PRICE, LIBRARY_FILE_ORG, LIBRARY_FILE_STR, O.REGISTER_DATE, NAME, LECTURER_Img, LECTURER_INFO
+						FROM ONLINE_LECTURE O
+						JOIN MEMBER_INFO M
+						ON O.LECTURER_ID = M.ID
+				]]>
+
+				<if test='keyword != null and keyword != ""'>
+					<if test='searchSe != null and searchSe !=""'>
+						<if test='searchSe == "lecturerName"'>
+							<![CDATA[	WHERE M.NAME LIKE #{keyword}	]]>
+						</if>
+						<if test='searchSe == "className"'>
+							<![CDATA[	WHERE ONLINE_LECTURE_NAME LIKE #{keyword}	]]>
+						</if>
+					</if>
+				</if>
+
+				<![CDATA[
+						ORDER BY REGISTER_DATE DESC
+					) A
+				) A
+				limit #{firstRecordIndex}, #{recordCountPerPage}
+			]]>
+
+	</select>
+
+
+	<select id="selectLecturerAll" parameterType="paramVO" resultMap="onlecResult">
+
+		<![CDATA[
+		SELECT *
+		FROM (
+			SELECT @RN:=@RN+1 AS RNUM, A.*
+			FROM (
+				SELECT *
+				FROM ONLINE_LECTURE
+				WHERE LECTURER_ID = #{id}
+		]]>
+
+		<![CDATA[
+				ORDER BY REGISTER_DATE DESC
+			) A
+		) A
+		limit #{firstRecordIndex}, #{recordCountPerPage}
+		]]>
+
+
+	</select>
+
+	<select id="selectLecturerOne" parameterType="onlineVO" resultMap="onlecResult">
+		SELECT *
+		FROM ONLINE_LECTURE
+		WHERE LECTURER_ID = #{lecturerId}
+		AND ONLINE_LECTURE_NO=#{onlineLectureNo}
+	</select>
+
+	<select id="selectOneVideo" parameterType="int" resultMap="onlecResult">
+		SELECT *
+		FROM ONLINE_LECTURE_VIDEO
+		WHERE ONLINE_LECTURE_NO=#{onlineLectureNo}
+		ORDER BY CHAPTER_NO ASC
+	</select>
+
+	<select id="selectOneVideoNo" parameterType="int" resultMap="onlecResult">
+		SELECT *
+		FROM ONLINE_LECTURE_VIDEO
+		WHERE VIDEO_NO=#{videoNo}
+	</select>
+
+
+
+	<select id="selectOne" parameterType="int" resultMap="onlecResult">
+		SELECT ONLINE_LECTURE_NO, LECTURER_ID, ONLINE_LECTURE_NAME, ONLINE_LECTURE_INFO, IMG_FILE, PRICE, LIBRARY_FILE_ORG, LIBRARY_FILE_STR, O.REGISTER_DATE, NAME, LECTURER_Img, LECTURER_INFO
+		FROM ONLINE_LECTURE O
+		JOIN MEMBER_INFO M
+		ON O.LECTURER_ID = M.ID
+		AND ONLINE_LECTURE_NO=#{onlineLectureNo}
+	</select>
+
+	<select id="videoCount" parameterType="int" resultType="int">
+		SELECT count(*)
+		FROM ONLINE_LECTURE_VIDEO
+		WHERE ONLINE_LECTURE_NO=#{onlineLectureNo}
+	</select>
+
+	<update id="updateClass" parameterType="onlineVO">
+		UPDATE ONLINE_LECTURE SET
+		ONLINE_LECTURE_NAME = #{onlineLectureName},
+		ONLINE_LECTURE_INFO = #{onlineLectureInfo},
+		IMG_FILE = #{imgFile},
+		PRICE = #{price},
+		LIBRARY_FILE_ORG = #{libraryFileOrg},
+		LIBRARY_FILE_STR = #{libraryFileStr}
+		WHERE ONLINE_LECTURE_NO=#{onlineLectureNo}
+	</update>
+
+	<update id="updateVideo" parameterType="onlineVO">
+		UPDATE ONLINE_LECTURE_VIDEO SET
+		VIDEO_NAME = #{videoName},
+		VIDEO_INFO = #{videoInfo},
+		VIDEO_FILE = #{videoFile},
+		VIDEO_FILE_ORG = #{videoFileOrg}
+		WHERE ONLINE_LECTURE_NO=#{onlineLectureNo}
+		AND CHAPTER_NO = #{chapterNo}
+	</update>
+
+	<delete id="deleteClass" parameterType="int">
+		DELETE FROM ONLINE_LECTURE
+		WHERE ONLINE_LECTURE_NO = #{onlineLectureNo}
+	</delete>
+
+	<delete id="deleteVideo" parameterType="int">
+		DELETE FROM ONLINE_LECTURE_VIDEO
+		WHERE ONLINE_LECTURE_NO = #{onlineLectureNo}
+	</delete>
+
+
+
+</mapper>
+
+

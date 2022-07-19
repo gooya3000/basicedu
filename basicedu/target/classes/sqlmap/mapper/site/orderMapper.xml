@@ -1,0 +1,269 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="site.order.OrderMapper">
+
+	<resultMap id="orderResult" type="orderVO">
+		<result property="orderNo" column="ORDER_NO" />
+		<result property="productNo" column="PRODUCT_NO" />
+		<result property="paymentNo" column="PAYMENT_NO" />
+		<result property="id" column="ID" />
+		<result property="quantity" column="QUANTITY" />
+		<result property="productPrice" column="PRODUCT_PRICE" />
+		<result property="orderStatus" column="ORDER_STATUS" />
+		<result property="orderDate" column="ORDER_DATE" />
+		<result property="updateDate" column="UPDATE_DATE" />
+		<result property="productSection" column="PRODUCT_SECTION" />
+
+		<result property="productName" column="PRODUCT_NAME" />
+		<result property="price" column="PRICE" />
+		<result property="imgFileName" column="IMG_FILE_NAME" />
+
+		<result property="name" column="NAME" />
+		<result property="address" column="ADDRESS" />
+		<result property="phoneNumber" column="PHONE_NUMBER" />
+		<result property="email" column="EMAIL" />
+		<result property="creditCard" column="CREDIT_CARD" />
+		<result property="point" column="POINT" />
+		<result property="pgTid" column="PG_TID" />
+		<result property="paymentDatetime" column="PAYMENT_DATETIME" />
+
+		<result property="reviewNo" column="REVIEW_NO" />
+		<result property="contents" column="CONTENTS" />
+		<result property="registerDate" column="REGISTER_DATE" />
+	</resultMap>
+
+	<select id="findOrderList" parameterType="orderVO" resultMap="orderResult">
+		<![CDATA[
+		SELECT
+			A.ORDER_NO
+			, A.PRODUCT_NO
+			, A.PAYMENT_NO
+			, A.ID
+			, A.QUANTITY
+			, A.ORDER_STATUS
+			, A.ORDER_DATE
+			, A.UPDATE_DATE
+			, A.PRODUCT_SECTION
+			, B.PRODUCT_NAME
+			, B.PRICE
+			, B.IMG_FILE_NAME
+		FROM PRODUCT_ORDER A
+		INNER JOIN PRODUCT B ON B.PRODUCT_NO = A.PRODUCT_NO
+		WHERE A.DELETE_AT = 'N'
+		]]>
+		<if test='orderNoArr != null and orderNoArr != ""'>
+			<![CDATA[	AND A.ORDER_NO IN	]]>
+			<foreach collection="orderNoArr" item="orderNo"  open="(" close=")" separator=",">
+				#{orderNo}
+	        </foreach>
+		</if>
+		<![CDATA[
+		ORDER BY A.ORDER_DATE DESC
+		]]>
+	</select>
+
+	<sql id="purchaseHistory-where">
+		<if test='id != null and id != ""'>
+			<![CDATA[	AND A.ID = #{id}	]]>
+		</if>
+		<if test='keyNo != null and keyNo != ""'>
+			<![CDATA[	AND A.PRODUCT_NO = #{keyNo}	]]>
+		</if>
+	</sql>
+
+	<select id="countPurchaseHistory" parameterType="paramVO" resultType="int">
+		<![CDATA[
+		SELECT COUNT(*) CNT
+		FROM PRODUCT_ORDER A
+		INNER JOIN PRODUCT B ON B.PRODUCT_NO = A.PRODUCT_NO
+		INNER JOIN PAYMENT C ON C.PAYMENT_NO = A.PAYMENT_NO
+		LEFT JOIN REVIEW D ON D.KEY_NO = A.ORDER_NO AND D.KEY_SECTION = 'P' AND D.ID = A.ID
+		WHERE A.DELETE_AT = 'N'
+		]]>
+		<include refid="purchaseHistory-where" />
+	</select>
+
+	<select id="findPurchaseHistoryList" parameterType="paramVO" resultMap="orderResult">
+		<![CDATA[
+		SELECT *
+		FROM (
+			SELECT @RN:=@RN+1 AS RNUM, A.*
+			FROM (
+				SELECT
+					A.ORDER_NO
+					, A.PRODUCT_NO
+					, A.PAYMENT_NO
+					, A.ID
+					, A.QUANTITY
+					, A.ORDER_STATUS
+					, A.ORDER_DATE
+					, A.UPDATE_DATE
+					, A.PRODUCT_SECTION
+					, B.PRODUCT_NAME
+					, B.PRICE
+					, B.IMG_FILE_NAME
+					, C.NAME
+					, C.ADDRESS
+					, C.PHONE_NUMBER
+					, C.EMAIL
+					, C.CREDIT_CARD
+					, C.POINT
+					, C.PG_TID
+					, C.PAYMENT_DATETIME
+					, D.REVIEW_NO
+					, D.REGISTER_DATE
+					, D.CONTENTS
+				FROM PRODUCT_ORDER A
+				INNER JOIN PRODUCT B ON B.PRODUCT_NO = A.PRODUCT_NO
+				INNER JOIN PAYMENT C ON C.PAYMENT_NO = A.PAYMENT_NO
+				LEFT JOIN REVIEW D ON D.KEY_NO = A.ORDER_NO AND D.KEY_SECTION = 'P' AND D.ID = A.ID
+				WHERE A.DELETE_AT = 'N'
+		]]>
+		<include refid="purchaseHistory-where" />
+		<![CDATA[
+				ORDER BY A.ORDER_DATE DESC, A.ORDER_NO DESC
+			) A
+		) A
+		limit #{firstRecordIndex}, #{recordCountPerPage}
+		]]>
+	</select>
+
+	<select id="findPurchaseHistory" parameterType="orderVO" resultMap="orderResult">
+		<![CDATA[
+		SELECT
+			A.ORDER_NO
+			, A.PRODUCT_NO
+			, A.PAYMENT_NO
+			, A.ID
+			, A.QUANTITY
+			, A.PRODUCT_PRICE
+			, A.ORDER_STATUS
+			, A.ORDER_DATE
+			, A.UPDATE_DATE
+			, A.PRODUCT_SECTION
+			, B.PRODUCT_NAME
+			, B.PRICE
+			, B.IMG_FILE_NAME
+			, C.NAME
+			, C.ADDRESS
+			, C.PHONE_NUMBER
+			, C.EMAIL
+			, C.CREDIT_CARD
+			, C.POINT
+			, C.PG_TID
+			, C.PAYMENT_DATETIME
+			, D.CONTENTS
+			, D.REGISTER_DATE
+		FROM PRODUCT_ORDER A
+		INNER JOIN PRODUCT B ON B.PRODUCT_NO = A.PRODUCT_NO
+		INNER JOIN PAYMENT C ON C.PAYMENT_NO = A.PAYMENT_NO
+		LEFT JOIN REVIEW D ON D.KEY_NO = A.ORDER_NO AND D.KEY_SECTION = 'P' AND D.ID = A.ID
+		WHERE A.DELETE_AT = 'N' AND A.ORDER_NO = #{orderNo}
+		]]>
+	</select>
+
+	<select id="findTotalSales" parameterType="orderVO" resultType="long">
+		<![CDATA[
+		SELECT IFNULL(SUM(QUANTITY*PRODUCT_PRICE),0) TOTAL_SALES
+		FROM PRODUCT_ORDER A
+		WHERE DELETE_AT = 'N' AND A.ORDER_STATUS != '0'
+		]]>
+		<if test='productNo != null and productNo != ""'>
+			<![CDATA[	AND PRODUCT_NO = #{productNo}	]]>
+		</if>
+	</select>
+
+	<insert id="saveOrder" parameterType="orderVO">
+		<![CDATA[
+		INSERT INTO PRODUCT_ORDER (
+			PRODUCT_NO
+			, ID
+			, QUANTITY
+			, ORDER_STATUS
+			, ORDER_DATE
+			, UPDATE_DATE
+			, PRODUCT_SECTION
+			, DELETE_AT
+			, PRODUCT_PRICE
+		) VALUES (
+			#{productNo}
+			, #{id}
+			, #{quantity}
+			, '0'
+			, NOW()
+			, NOW()
+			, 'P'
+			, 'N'
+			, #{productPrice}
+		)
+		]]>
+		<selectKey keyProperty="orderNo" resultType="Integer" order="AFTER">
+			<![CDATA[	SELECT LAST_INSERT_ID()	]]>
+	    </selectKey>
+	</insert>
+
+	<update id="modifyOrder" parameterType="orderVO">
+		<![CDATA[
+		UPDATE PRODUCT_ORDER SET
+			UPDATE_DATE = NOW()
+		]]>
+		<if test='orderStatus != null and orderStatus != ""'>
+			<![CDATA[	, ORDER_STATUS = #{orderStatus}	]]>
+		</if>
+		<if test='paymentNo != null and paymentNo != ""'>
+			<![CDATA[	, PAYMENT_NO = #{paymentNo}	]]>
+		</if>
+		<![CDATA[
+		WHERE ORDER_NO = #{orderNo}
+		]]>
+	</update>
+
+	<update id="deleteOrder" parameterType="orderVO">
+		<![CDATA[
+		UPDATE PRODUCT_ORDER SET
+			DELETE_AT = 'Y'
+		WHERE ORDER_NO = #{orderNo}
+		]]>
+	</update>
+
+	<insert id="savePayment" parameterType="paymentVO">
+		<![CDATA[
+			INSERT INTO PAYMENT (
+				PAYMENT_NO
+				, NAME
+				, ADDRESS
+				, PHONE_NUMBER
+				, EMAIL
+				, CREDIT_CARD
+				, POINT
+				, PG_TID
+				, PAYMENT_DATETIME
+			) VALUES (
+				#{paymentNo}
+				, #{name}
+				, #{address}
+				, #{phoneNumber}
+				, #{email}
+				, #{creditCard}
+				, #{point}
+				, #{pgTid}
+				, NOW()
+			)
+		]]>
+	</insert>
+
+	<!-- 주문상태 변경 스케줄러 쿼리 -->
+	<update id="modifyOrderStatusScheduler">
+		<![CDATA[
+			UPDATE PRODUCT_ORDER SET
+				ORDER_STATUS = '3'
+				, UPDATE_DATE = NOW()
+			WHERE DELETE_AT = 'N'
+				AND ORDER_STATUS = '2'
+				AND DATE_ADD(UPDATE_DATE, INTERVAL 11 DAY) < NOW()
+		]]>
+	</update>
+</mapper>
+
+

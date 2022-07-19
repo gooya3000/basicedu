@@ -1,0 +1,122 @@
+.test{
+	border: 1px solid black;
+}
+
+.offlec_name{
+	font-size: 80px;
+	margin-top: 20px;
+	width: 60%;
+
+}
+
+.offlec_img{
+	font-size: 80px;
+	margin-top: 20px;
+	width: 60%;
+	height:600px;
+}
+
+.offlec_fixbanner{
+	margin-top: 80px;
+	width: 35%;
+	height:700px;
+	float: left;
+	margin-left: 20px;
+}
+
+.offlec_menu{
+	display:flex;
+	float: left;
+	margin-top:10px;
+	width:100%;
+
+
+}
+.offlec_menu_group{
+	width: 35%;
+	height: 90px;
+	margin-right: 5px;
+	border: 1px solid black;
+	font-size: small;
+}
+
+.offlec_intro_teacher{
+	margin-left:40px;
+	margin-top: 20px;
+	width: 90%;
+	height:600px;
+	border: 1px solid black;
+}
+
+.offlec_intro_class{
+	margin-left:40px;
+	font-size: 80px;
+	margin-top: 20px;
+	width: 90%;
+	height:600px;
+	border: 1px solid black;
+}
+
+.offlec_review{
+	margin-left:40px;
+	font-size: 80px;
+	margin-top: 20px;
+	width: 90%;
+	height:600px;
+	border: 1px solid black;
+}
+
+.offlec_ul{
+	width: 100%;
+}
+
+.offlec_li{
+	float: left;
+ 	font-size: 35px;
+ 	width: 33.333%;
+  	text-align: center;
+  	padding-bottom: 15px;
+
+}
+
+.off_on{
+	border-bottom: 5px solid #ff0000;
+	margin-top:10px;
+ 	font-weight: 500;
+}
+.offlec_schedule_li{
+	float: left;
+	font-size: 27px;
+	text-align: center;
+}
+
+.offlec_schedule{
+	margin-top:50px;
+	font-size: 40px;
+	text-align: center;
+
+}
+
+.offlec_schedule_time{
+	margin-top:50px;
+	font-size: 35px;
+	text-align: right;
+
+}
+
+.off_btn{
+	width: 200px;
+	height:60px;
+	margin-left: auto;
+	margin-right: auto;
+	margin-top:30px;
+	display: table;
+}
+.offlec_introbox{
+	font-size:40px;
+	height: 100%;
+	width:20%;
+	float: left;
+	margin-right: 10px;
+	border: 1px solid black;
+}

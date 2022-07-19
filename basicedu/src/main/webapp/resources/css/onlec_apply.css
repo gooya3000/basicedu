@@ -1,0 +1,112 @@
+#contents{
+  padding-bottom: 200px;
+}
+.lec_num{
+  color: #666;
+  margin-left: 20px;
+
+}
+#title{
+  margin-top: 180px;
+  margin-bottom: 100px;
+  width: 100%;
+  border-bottom: 1px solid #333;
+  padding-bottom:15px;
+  padding-left: 5px;
+  color: #333;
+}
+.mini_title{
+  text-align: center;
+  font-size: 22px;
+  width: 85%;
+  margin: 0 auto;
+  margin-bottom: 50px;
+  margin-top: 100px;
+}
+.onlec_apply_name{
+  width: 85%;
+  margin: 0 auto;
+  text-align: center;
+  background-color: #f6f6f6;
+  padding: 20px;
+  border-radius: 10px;
+  margin-bottom: 10px;
+}
+.onlec_apply_name_2{
+  margin-top: 10px;
+}
+.onlec_apply_name_3{
+  border: 1px solid rgb(255,217,102);
+  cursor: pointer;
+}
+.choice{
+  background-color: rgb(255,217,102);
+}
+.onlec_apply_table{
+  width: 88%;
+  margin: 0 auto;
+
+}
+.onlec_apply_td{
+  border: 1px solid #999;
+  padding: 10px;
+  padding-top: 15px;
+  padding-bottom: 15px;
+}
+.tdtd{
+  text-align: right;
+  border-left: 0px solid #fff;
+}
+.tdth{
+  border-right: 0px solid #fff;
+  width: 30%;
+}
+.red_c{
+  color: red;
+}
+.point_input{
+  border: 1px solid #666;
+  height: 27px;
+  width: 600px;
+  padding-left: 10px;
+}
+.point_btn{
+  padding: 5px;
+  padding-left: 20px;
+  padding-right: 20px;
+  border-radius: 5px;
+  background-color:rgb(255,217,102);
+  font-weight: bold;
+}
+.btns{
+  text-align: center;
+  border-top: 1px solid #333;
+  margin-top: 200px;
+  padding-top: 70px;
+}
+.onlec_apply_submit{
+  width: 40%;
+  height: 50px;
+  border-radius: 5px;
+  background-color: rgb(255,217,102);/*�뜝�럥嫄쀥뜝�럩�굚*/
+  box-shadow:  1px 1px 12px 1px rgba(0, 0, 0, 0.1);
+  font-size: 18px;
+  font-weight: 900;
+}
+.onlec_apply_cancle{
+  width: 40%;
+  height: 50px;
+  border-radius: 5px;
+  background-color: #666;
+  box-shadow:  1px 1px 12px 1px rgba(0, 0, 0, 0.1);
+  font-size: 18px;
+  font-weight: 900;
+  color: #fff;
+}
+.btns_mg{
+  margin-bottom: 10px;
+}
+.pointtd{
+  padding-top: 40px;
+  padding-bottom: 40px;
+}

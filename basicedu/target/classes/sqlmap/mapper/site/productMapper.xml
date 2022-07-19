@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="site.mypage.product.ProductMapper">
+
+	<sql id="product-where">
+		<if test='keyword != null and keyword != ""'>
+			<if test='searchSe != null and searchSe !=""'>
+				<if test='searchSe == "1"'>
+					<![CDATA[	AND A.PRODUCT_NAME LIKE CONCAT('%', TRIM(#{keyword}), '%')	]]>
+				</if>
+				<if test='searchSe == "2"'>
+					<![CDATA[	AND B.NAME LIKE CONCAT('%', TRIM(#{keyword}), '%')	]]>
+				</if>
+			</if>
+			<if test='searchSe == null || searchSe == ""'>
+				<![CDATA[	AND PRODUCT_NAME LIKE CONCAT('%', TRIM(#{keyword}), '%')	]]>
+			</if>
+		</if>
+		<if test='id != null and id != ""'>
+			<![CDATA[	AND SELLER_ID = #{id} ]]>
+			<if test='keyNo != null and keyNo != ""'>
+				<![CDATA[	AND PRODUCT_NO != #{keyNo} ]]>
+			</if>
+		</if>
+		<if test='target == "store"'>
+			<![CDATA[	AND QUANTITY > 0	]]>
+		</if>
+	</sql>
+
+	<select id="countProduct" parameterType="paramVO" resultType="int">
+		<![CDATA[
+		SELECT COUNT(A.PRODUCT_NO) CNT
+		FROM PRODUCT A
+		INNER JOIN MEMBER_INFO B ON B.ID = A.SELLER_ID
+		WHERE A.DELETE_AT = 'N'
+		]]>
+		<include refid="product-where" />
+	</select>
+
+	<resultMap id="productResult" type="productVO">
+		<result property="productNo" column="PRODUCT_NO" />
+		<result property="productName" column="PRODUCT_NAME" />
+		<result property="contentsFileName" column="CONTENTS_FILE_NAME" />
+		<result property="quantity" column="QUANTITY" />
+		<result property="price" column="PRICE" />
+		<result property="imgFileName" column="IMG_FILE_NAME" />
+		<result property="sellerId" column="SELLER_ID" />
+		<result property="registerDate" column="REGISTER_DATE" />
+
+		<result property="sellerName" column="SELLER_NAME" />
+	</resultMap>
+
+	<select id="findProductList" parameterType="paramVO" resultMap="productResult">
+		<![CDATA[
+		SELECT *
+		FROM (
+			SELECT @RN:=@RN+1 AS RNUM, A.*
+			FROM (
+				SELECT
+					A.PRODUCT_NO
+					, A.PRODUCT_NAME
+					, A.CONTENTS_FILE_NAME
+					, A.QUANTITY
+					, A.PRICE
+					, A.IMG_FILE_NAME
+					, A.SELLER_ID
+					, A.REGISTER_DATE
+					, B.NAME SELLER_NAME
+				FROM PRODUCT A
+				INNER JOIN MEMBER_INFO B ON B.ID = A.SELLER_ID
+				WHERE A.DELETE_AT = 'N'
+		]]>
+		<include refid="product-where" />
+		<![CDATA[
+				ORDER BY A.REGISTER_DATE DESC
+			) A
+		) A
+		limit #{firstRecordIndex}, #{recordCountPerPage}
+		]]>
+	</select>
+
+	<select id="findProduct" parameterType="productVO" resultMap="productResult">
+		<![CDATA[
+		SELECT
+			A.PRODUCT_NO
+			, A.PRODUCT_NAME
+			, A.CONTENTS_FILE_NAME
+			, A.QUANTITY
+			, A.PRICE
+			, A.IMG_FILE_NAME
+			, A.SELLER_ID
+			, A.REGISTER_DATE
+			, B.NAME SELLER_NAME
+		FROM PRODUCT A
+		INNER JOIN MEMBER_INFO B ON B.ID = A.SELLER_ID
+		WHERE A.PRODUCT_NO = #{productNo}
+		]]>
+	</select>
+
+	<insert id="saveProduct" parameterType="productVO">
+		<![CDATA[
+		INSERT INTO PRODUCT (
+			PRODUCT_NAME
+			, CONTENTS_FILE_NAME
+			, QUANTITY
+			, PRICE
+			, IMG_FILE_NAME
+			, SELLER_ID
+			, REGISTER_DATE
+			, DELETE_AT
+		) VALUES (
+			#{productName}
+			, #{contentsFileName}
+			, #{quantity}
+			, #{price}
+			, #{imgFileName}
+			, #{sellerId}
+			, NOW()
+			, 'N'
+		)
+		]]>
+	</insert>
+
+	<update id="modifyProduct" parameterType="productVO">
+		<![CDATA[
+		UPDATE PRODUCT SET
+			PRODUCT_NAME = #{productName}
+			, QUANTITY = #{quantity}
+			, PRICE = #{price}
+		]]>
+		<if test='contentsFileName != null and contentsFileName != ""'>
+			<![CDATA[	, CONTENTS_FILE_NAME = #{contentsFileName}	]]>
+		</if>
+		<if test='imgFileName != null and imgFileName != ""'>
+			<![CDATA[	, IMG_FILE_NAME = #{imgFileName}	]]>
+		</if>
+		<![CDATA[
+		WHERE PRODUCT_NO = #{productNo}
+		]]>
+	</update>
+
+	<update id="modifyProductQuantityByOrder" parameterType="productVO">
+		<![CDATA[
+		UPDATE PRODUCT SET
+			QUANTITY = QUANTITY-#{quantity}
+		WHERE PRODUCT_NO = #{productNo}
+		]]>
+	</update>
+
+	<update id="deleteProduct" parameterType="productVO">
+		<![CDATA[
+		UPDATE PRODUCT SET
+			DELETE_AT = 'Y'
+		WHERE PRODUCT_NO = #{productNo}
+		]]>
+	</update>
+</mapper>
+
+

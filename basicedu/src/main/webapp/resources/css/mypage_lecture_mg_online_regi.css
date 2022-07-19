@@ -1,0 +1,204 @@
+#contents{
+  padding-bottom: 200px;
+}
+.my_page_contents{
+  float: left;
+  margin-top: 40px;
+  border-radius: 10px;
+  margin-left: 20px;
+  box-shadow:  1px 1px 12px 1px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+}
+.lecture_ch{
+  margin-left: 540px;
+
+}
+.lecture_ch_li{
+  float: left;
+  width: 150px;
+  height: 40px;
+  border-radius: 5px;
+  border: 1px solid #ddd;
+  text-align: center;
+  line-height: 40px;
+  margin-left: 10px;
+  color: #999;
+}
+.mg_on{
+  /* background-color: #f6f6f6; */
+  font-weight: 700;
+  border: 1px solid #000;
+  color: #000;
+}
+.onlec_mg_list{
+
+  margin-top: 50px;
+}
+.onlec_regi_btn{
+  width: 100%;
+  height: 50px;
+  border-radius: 5px;
+  background-color: rgb(255,217,102);/*�끂�옉*/
+  box-shadow:  1px 1px 12px 1px rgba(0, 0, 0, 0.1);
+  font-size: 18px;
+  font-weight: 900;
+  cursor: pointer;
+}
+.h4h4{
+  margin-top: 100px;
+  text-align: center;
+  font-size: 20px;
+  margin-bottom: 40px;
+}
+
+.onlec_mg_list_table{
+  width: 100%;
+  margin-top: 30px;
+  background-color: #f6f6f6;
+
+
+
+
+}
+.onlec_mg_list_th{
+  padding: 20px;
+  text-align: left;
+  width: 15%;
+  padding-left: 30px;
+
+
+}
+
+.onlec_mg_list_td{
+  padding: 20px;
+  padding-right: 30px;
+
+}
+
+.regi_input{
+  border: 1px solid #000;
+  width: 96.5%;
+  height: 30px;
+  padding-left: 10px;
+  padding-right: 10px;
+}
+.regi_textarea{
+  border: 1px solid #000;
+  padding: 10px;
+  width: 96.5%;
+  height: 100px;
+}
+
+.upload_info{
+  margin-top: 10px;
+  color: red;
+  font-size: 12px;
+}
+.padding{
+  height: 30px;
+}
+.onlec_select{
+  width: 180px;
+  height: 30px;
+  border: 1px solid #000;
+}
+.choice{
+  font-size: 14px;
+}
+
+
+.merge_td{
+  padding-top: 30px;
+
+
+}
+.video_box{
+  background-color: #f6f6f6;
+  padding-bottom: 30px;
+  display: none;
+}
+.box1{
+  display: block;
+}
+.add_video{
+  margin: 0 auto;
+  width: 93.8%;
+  ;
+}
+
+.index{
+  width: 100%;
+}
+.border_td{
+  border: 1px solid #000;
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+.tdtd{
+  font-size: 14px;
+  width: 20.5%;
+  text-align: center;
+}
+.video_input{
+  width: 580px;
+  height: 30px;
+  border: 1px solid #ddd;
+  padding-left: 10px;
+  padding-right: 10px;
+
+
+}
+.tdinput{
+  padding-left: 20px;
+}
+
+.tdinput>textarea{
+  width: 580px;
+  height: 50px;
+  border: 1px solid #ddd;
+  padding: 10px;
+}
+
+.submit_box{
+  width: 100%;
+  text-align: center;
+  padding-top: 80px;
+  padding-bottom: 100px;
+}
+.onlec_submit_btn{
+  width: 50%;
+  height: 50px;
+  border-radius: 5px;
+  background-color: rgb(255,217,102);/*�끂�옉*/
+  box-shadow:  1px 1px 12px 1px rgba(0, 0, 0, 0.1);
+  font-size: 18px;
+  font-weight: 900;
+}
+.prFile{
+	color: red;
+	font-size: 12px;
+}
+.thumbFrame{
+	width:150px;
+	height: 100px;
+	border-radius: 5px;
+	overflow: hidden;
+	background-color: #ddd;
+	margin-top: 5px;
+}
+.thumImg{
+	width: 100%;
+}
+
+.uploadCancle{
+	padding: 3px;
+	padding-left:15px;
+	padding-right: 15px;
+	background-color: #333;
+	color: #fff;
+	border-radius: 2px;
+	display: none;
+
+}
+
+

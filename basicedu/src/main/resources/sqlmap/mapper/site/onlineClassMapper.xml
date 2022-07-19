@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="site.lecture.online.OnlineClassMapper">
+
+	<insert id="applyClass" parameterType="onlineApplyVO">
+		INSERT INTO ONLINE_LECTURE_APPLICATION(
+			ONLINE_LECTURE_NO,
+			ID,
+			RUNTIME,
+			REGISTER_DATE,
+			LATEST_ACCESS_DATE,
+			PAYMENT_NO,
+			POINT_BACK
+		)VALUES(
+			#{onlineLectureNo},
+			#{id},
+			0,
+			now(),
+			now(),
+			#{paymentNo},
+			0
+		)
+	</insert>
+
+	<insert id="createMyProgress" parameterType="onlineApplyVO">
+		INSERT INTO ONLINE_LECTURE_PROGRESS(
+			ONLINE_ORDER_NO,
+			ONLINE_LECTURE_NO,
+			VIDEO_NO,
+			RUNTIME,
+			LATEST_ACCESS_DATE
+		)VALUES(
+			#{onlineOrderNo},
+			#{onlineLectureNo},
+			#{videoNo},
+			0,
+			now()
+		)
+	</insert>
+
+	<select id="countApplyClass" parameterType="paramVO" resultType="long">
+		<![CDATA[
+		SELECT COUNT(*) CNT
+		FROM ONLINE_LECTURE_APPLICATION
+
+		]]>
+		<if test='id != null and id != ""'>
+			<![CDATA[	WHERE ID = #{id}	]]>
+		</if>
+
+	</select>
+
+	<resultMap type="onlineApplyVO" id="onlineApplyResult">
+		<result property="onlineLectureNo" column="ONLINE_LECTURE_NO" />
+		<result property="id" column="ID" />
+		<result property="runtime" column="RUNTIME" />
+		<result property="registerDate" column="REGISTER_DATE" />
+		<result property="imgFile" column="IMG_FILE" />
+		<result property="onlineLectureName" column="ONLINE_LECTURE_NAME" />
+		<result property="latestAccessDate" column="LATEST_ACCESS_DATE" />
+		<result property="price" column="PRICE" />
+		<result property="pointBack" column="POINT_BACK" />
+		<result property="onlineOrderNo" column="ONLINE_ORDER_NO" />
+		<result property="paymentNo" column="PAYMENT_NO" />
+		<result property="videoNo" column="VIDEO_NO" />
+	</resultMap>
+
+	<select id="selectNowVideo" parameterType="onlineApplyVO" resultMap="onlineApplyResult">
+		SELECT *
+		FROM ONLINE_LECTURE_PROGRESS
+		WHERE ONLINE_ORDER_NO = #{onlineOrderNo}
+		AND VIDEO_NO = #{videoNo}
+	</select>
+
+	<select id="selectMyProgress" parameterType="int" resultMap="onlineApplyResult">
+		SELECT *
+		FROM ONLINE_LECTURE_PROGRESS
+		WHERE ONLINE_ORDER_NO = #{onlineOrderNo}
+	</select>
+
+	<select id="selectOrderNo" parameterType="string" resultType="int">
+		SELECT ONLINE_ORDER_NO
+		FROM ONLINE_LECTURE_APPLICATION
+		WHERE PAYMENT_NO = #{paymentNo}
+	</select>
+
+	<select id="selectMyClass" parameterType="paramVO" resultMap="onlineApplyResult">
+		<![CDATA[
+		SELECT *
+		FROM (
+			SELECT @RN:=@RN+1 AS RNUM, A.*
+			FROM (
+				SELECT
+					ONLINE_ORDER_NO,
+					C.ONLINE_LECTURE_NO,
+					ID,
+					RUNTIME,
+					C.REGISTER_DATE,
+					IMG_FILE,
+					ONLINE_LECTURE_NAME,
+					LATEST_ACCESS_DATE,
+					PRICE,
+					POINT_BACK
+				FROM ONLINE_LECTURE_APPLICATION C
+				JOIN ONLINE_LECTURE L
+				ON C.ONLINE_LECTURE_NO = L.ONLINE_LECTURE_NO
+				WHERE ID = #{id}
+		]]>
+
+		<![CDATA[
+				ORDER BY REGISTER_DATE DESC
+			) A
+		) A
+		limit #{firstRecordIndex}, #{recordCountPerPage}
+		]]>
+
+	</select>
+
+	<select id="selectMyClassOne" parameterType="onlineApplyVO" resultMap="onlineApplyResult">
+		SELECT
+			ONLINE_ORDER_NO,
+			ONLINE_LECTURE_NO,
+			ID,
+			RUNTIME,
+			REGISTER_DATE,
+			LATEST_ACCESS_DATE,
+			POINT_BACK
+		FROM ONLINE_LECTURE_APPLICATION
+		WHERE ID = #{id}
+		AND ONLINE_LECTURE_NO = #{onlineLectureNo}
+		<if test='onlineOrderNo !=0'>
+			AND ONLINE_ORDER_NO = #{onlineOrderNo}
+		</if>
+	</select>
+
+	<select id="selectOrder" parameterType="int" resultMap="onlineApplyResult">
+		SELECT
+			ID,
+			RUNTIME,
+			REGISTER_DATE
+		FROM ONLINE_LECTURE_APPLICATION
+		WHERE ONLINE_LECTURE_NO = #{onlineLectureNo}
+		ORDER BY ONLINE_ORDER_NO DESC
+	</select>
+
+	<update id="updateRuntimeEach" parameterType="onlineApplyVO">
+		UPDATE ONLINE_LECTURE_PROGRESS SET
+			RUNTIME = #{runtime},
+			LATEST_ACCESS_DATE = NOW()
+		WHERE ONLINE_ORDER_NO = #{onlineOrderNo}
+		AND VIDEO_NO = #{videoNo}
+	</update>
+
+	<update id="updateRuntime" parameterType="onlineApplyVO">
+		UPDATE ONLINE_LECTURE_APPLICATION SET
+			RUNTIME = #{runtime},
+			LATEST_ACCESS_DATE = NOW()
+		WHERE ID = #{id}
+		AND ONLINE_LECTURE_NO = #{onlineLectureNo}
+	</update>
+
+	<update id="updatePointBack" parameterType="int">
+		UPDATE ONLINE_LECTURE_APPLICATION SET
+			POINT_BACK = 1
+		WHERE ONLINE_ORDER_NO = #{onlineOrderNo}
+	</update>
+
+	<delete id="deleteClass" parameterType="int">
+		DELETE FROM ONLINE_LECTURE_APPLICATION
+		WHERE ONLINE_ORDER_NO = #{onlineOrderNo}
+	</delete>
+
+
+
+
+
+
+
+</mapper>

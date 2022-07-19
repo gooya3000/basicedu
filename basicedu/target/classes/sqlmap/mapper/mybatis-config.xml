@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-config.dtd">
+
+<configuration>
+	<typeAliases>
+        <typeAlias alias="paramVO" type="site.util.Param"/>
+
+        <typeAlias alias="productVO" type="site.mypage.product.Product"/>
+        <typeAlias alias="memberVO" type="site.member.Member"/>
+        <typeAlias alias="offlineVO" type="site.mypage.lecturer.offline.Offline"/>
+        <typeAlias alias="shoppingBasketVO" type="site.shoppingBasket.ShoppingBasket"/>
+        <typeAlias alias="reviewVO" type="site.mypage.review.Review"/>
+        <typeAlias alias="onlineVO" type="site.mypage.lecturer.online.OnlecMg"/>
+        <typeAlias alias="offAplicationVO"  type="site.lecture.offline.OfflineApplication"/>
+        <typeAlias alias="onlineApplyVO" type="site.lecture.online.OnlineClass"/>
+        <typeAlias alias="pointVO" type="site.point.Point"/>
+        <typeAlias alias="orderVO" type="site.order.Order"/>
+        <typeAlias alias="paymentVO" type="site.order.Payment"/>
+        <typeAlias alias="offlineAdminVO" type="site.admin.offline.OfflineAdmin"/>
+    </typeAliases>
+</configuration>

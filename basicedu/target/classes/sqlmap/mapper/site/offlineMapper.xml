@@ -1,0 +1,444 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="site.mypage.lecturer.offline.OfflineMapper">
+
+	<insert id="offlineJoinadd" parameterType="offlineVO">
+		<![CDATA[
+		INSERT INTO OFFLINE_LECTURE (
+			 OFFLINE_LECTURE_NAME
+			, OFFLINE_LECTURE_INTRODUCE
+			, OFFLINE_LECTURE_IMG
+			, OFFLINE_LECTURE_ADDRESS
+			, OFFLINE_LECTURE_MIN
+			, OFFLINE_LECTURE_MAX
+			, OFFLINE_LECTURE_APPLYPERIODSTART
+			, OFFLINE_LECTURE_SCHEDULE
+			, OFFLINE_LECTURE_REG
+			, OFFLINE_LECTURE_APPLYPERIODEND
+			,ID
+		) VALUES (
+			#{offline_lecture_name}
+			, #{offline_lecture_introduce}
+			, #{offline_lecture_img}
+			, #{offline_lecture_address}
+			, #{offline_lecture_min}
+			, #{offline_lecture_max}
+			, STR_TO_DATE(#{offline_lecture_applyperiodstart},'%Y-%m-%d')
+			, STR_TO_DATE(#{offline_lecture_schedule}, '%Y-%m-%d')
+			, NOW()
+			, STR_TO_DATE(#{offline_lecture_applyperiodend},'%Y-%m-%d')
+			,#{id}
+		)
+		]]>
+		<!-- 나중에 id도 추가해야함 -->
+	</insert>
+
+	<select id="offlineList" parameterType="paramVO" resultType="offlineVO">
+			<![CDATA[
+				SELECT *
+				FROM (
+					SELECT @RN:=@RN+1 AS RNUM, A.*
+					FROM (
+						SELECT OFFLINE_LECTURE_NAME
+							, OFFLINE_LECTURE_NO
+							, OFFLINE_LECTURE_IMG
+							, OFFLINE_LECTURE_ADDRESS
+							, ID
+							, OFFLINE_LECTURE_REG
+							, OFFLINE_LECTURE_SCHEDULE
+							FROM OFFLINE_LECTURE
+						 	WHERE ID = #{id}
+				]]>
+
+				<![CDATA[
+						ORDER BY OFFLINE_LECTURE_SCHEDULE ASC
+					) A
+				) A
+				limit #{firstRecordIndex}, #{recordCountPerPage}
+			]]>
+	</select>
+
+	<select id="offlineList2" parameterType="offlineVO" resultType="offlineVO">
+		SELECT OFFLINE_LECTURE_NAME
+						, OFFLINE_LECTURE_NO
+						, OFFLINE_LECTURE_IMG
+						, OFFLINE_LECTURE_ADDRESS
+						, ID
+						, OFFLINE_LECTURE_REG
+						, OFFLINE_LECTURE_SCHEDULE
+						FROM OFFLINE_LECTURE
+					 	WHERE ID = #{id}
+	</select>
+
+	<select id="countmyclass" parameterType="java.lang.String" resultType="long">
+		SELECT COUNT(*) CNT FROM OFFLINE_LECTURE WHERE id=#{id};
+	</select>
+
+	<select id="offlineSelect" parameterType="offlineVO"
+		resultType="offlineVO">
+		SELECT OFFLINE_LECTURE_NAME
+		, OFFLINE_LECTURE_NO
+		, OFFLINE_LECTURE_INTRODUCE
+		, OFFLINE_LECTURE_IMG
+		, OFFLINE_LECTURE_ADDRESS
+		, OFFLINE_LECTURE_MIN
+		, OFFLINE_LECTURE_MAX
+		, OFFLINE_LECTURE_APPLYPERIODSTART
+		, OFFLINE_LECTURE_SCHEDULE
+		, OFFLINE_LECTURE_REG
+		, ID
+		, OFFLINE_LECTURE_APPLYPERIODEND
+		FROM OFFLINE_LECTURE
+		WHERE OFFLINE_LECTURE_NO = #{offline_lecture_NO}
+	</select>
+
+
+	<select id="offlineSelectAll" parameterType="paramVO" resultType="offlineVO">
+		<![CDATA[
+		SELECT *
+		FROM (
+			SELECT @RN:=@RN+1 AS RNUM, A.*
+			FROM (
+				SELECT OFFLINE_LECTURE_NAME
+			, OFFLINE_LECTURE_NO
+			, OFFLINE_LECTURE_IMG
+			, OFFLINE_LECTURE_ADDRESS
+			, ID
+			, OFFLINE_LECTURE_REG
+			FROM OFFLINE_LECTURE
+		]]>
+
+		<![CDATA[
+				ORDER BY OFFLINE_LECTURE_REG DESC
+			) A
+		) A
+		limit #{firstRecordIndex}, #{recordCountPerPage}
+		]]>
+	</select>
+
+	<select id="countClass" resultType="long">
+		SELECT COUNT(*) CNT FROM OFFLINE_LECTURE
+	</select>
+
+	<delete id="offlineDelete" parameterType="offlineVO">
+		DELETE FROM
+		OFFLINE_LECTURE
+		WHERE OFFLINE_LECTURE_NO = #{offline_lecture_NO}
+	</delete>
+
+	<update id="offlineUpdate" parameterType="offlineVO">
+		UPDATE OFFLINE_LECTURE
+		SET
+		OFFLINE_LECTURE_NAME = #{offline_lecture_name}
+		, OFFLINE_LECTURE_INTRODUCE = #{offline_lecture_introduce}
+		, OFFLINE_LECTURE_IMG = #{offline_lecture_img}
+		, OFFLINE_LECTURE_ADDRESS = #{offline_lecture_address}
+		, OFFLINE_LECTURE_MIN = #{offline_lecture_min}
+		, OFFLINE_LECTURE_MAX = #{offline_lecture_max}
+		, OFFLINE_LECTURE_APPLYPERIODSTART = STR_TO_DATE(#{offline_lecture_applyperiodstart},'%Y-%m-%d')
+		, OFFLINE_LECTURE_SCHEDULE = STR_TO_DATE(#{offline_lecture_schedule}, '%Y-%m-%d')
+		, OFFLINE_LECTURE_REG = NOW()
+		, OFFLINE_LECTURE_APPLYPERIODEND = STR_TO_DATE(#{offline_lecture_applyperiodend},'%Y-%m-%d')
+		WHERE OFFLINE_LECTURE_NO = #{offline_lecture_NO}
+	</update>
+
+	<update id="offlineUpdate1" parameterType="offlineVO">
+		UPDATE OFFLINE_LECTURE
+		SET
+		OFFLINE_LECTURE_NAME = #{offline_lecture_name}
+		, OFFLINE_LECTURE_INTRODUCE = #{offline_lecture_introduce}
+		, OFFLINE_LECTURE_ADDRESS = #{offline_lecture_address}
+		, OFFLINE_LECTURE_MIN = #{offline_lecture_min}
+		, OFFLINE_LECTURE_MAX = #{offline_lecture_max}
+		, OFFLINE_LECTURE_APPLYPERIODSTART = STR_TO_DATE(#{offline_lecture_applyperiodstart},'%Y-%m-%d')
+		, OFFLINE_LECTURE_SCHEDULE = STR_TO_DATE(#{offline_lecture_schedule}, '%Y-%m-%d')
+		, OFFLINE_LECTURE_REG = NOW()
+		, OFFLINE_LECTURE_APPLYPERIODEND = STR_TO_DATE(#{offline_lecture_applyperiodend},'%Y-%m-%d')
+		WHERE OFFLINE_LECTURE_NO = #{offline_lecture_NO}
+	</update>
+
+	<select id="fileSearch" parameterType="java.lang.Integer" resultType="java.lang.String">
+		SELECT OFFLINE_LECTURE_IMG
+		FROM OFFLINE_LECTURE
+		WHERE OFFLINE_LECTURE_NO =#{offline_lecture_NO}
+	</select>
+
+	<insert id="offlineapplicationadd" parameterType="offAplicationVO">
+		INSERT INTO OFFLINE_LECTURE_APPLICATION (
+			 APPLICATION_NAME
+			,APPLICATION_ID
+			,APPLICATION_NUMBER
+			,APPLICATION_PHONE
+			,APPLICATION_REGDATE
+			,APPLICATION_INTRODUCE
+			,OFFLINE_LECTURE_NO
+			,APPLICATION_STATUS
+		) VALUES(
+			 #{application_name}
+			,#{application_id}
+			,#{application_number}
+			,#{application_phone}
+			,NOW()
+			,#{application_introduce}
+			,#{offline_lecture_NO}
+			,0
+
+		)
+	</insert>
+
+	<select id="offapplicationList" parameterType="paramVO" resultType="offAplicationVO">
+	<![CDATA[
+				SELECT *
+				FROM (
+					SELECT @RN:=@RN+1 AS RNUM, A.*
+					FROM (
+							SELECT APPLICATION_NAME
+								, APPLICATION_NO
+								, APPLICATION_ID
+								, APPLICATION_NUMBER
+								, APPLICATION_REGDATE
+								, APPLICATION_STATUS
+								FROM OFFLINE_LECTURE_APPLICATION
+								WHERE OFFLINE_LECTURE_NO = #{keyNo}
+				]]>
+
+				<![CDATA[
+						ORDER BY APPLICATION_REGDATE DESC
+					) A
+				) A
+				limit #{firstRecordIndex}, #{recordCountPerPage}
+			]]>
+	</select>
+
+	<select id="applicationListCount" parameterType="java.lang.Integer" resultType="long">
+			SELECT COUNT(*) CNT FROM offline_lecture_application
+			WHERE OFFLINE_LECTURE_NO = #{offline_lecture_NO}
+	</select>
+
+	<select id="offaplicationSel" parameterType="java.lang.Integer" resultType="offAplicationVO">
+	SELECT APPLICATION_NAME
+			, APPLICATION_ID
+			, APPLICATION_NUMBER
+			, APPLICATION_PHONE
+			, APPLICATION_INTRODUCE
+			, APPLICATION_REGDATE
+			, APPLICATION_NO
+			, OFFLINE_LECTURE_NO
+			FROM OFFLINE_LECTURE_APPLICATION
+			WHERE APPLICATION_NO = #{application_no}
+	</select>
+
+
+
+	<!-- 신청서 승인여부 --><!-- 0=대기중    1=승인     2=거절 -->
+	<update id="offaplicationApproval" parameterType="offAplicationVO">
+		UPDATE OFFLINE_LECTURE_APPLICATION SET APPLICATION_STATUS=#{application_status} WHERE APPLICATION_NO=#{application_no}
+	</update>
+
+	<select id="offlecnumberSum" parameterType="java.lang.Integer" resultType="java.lang.Integer">
+		SELECT COALESCE(SUM(APPLICATION_NUMBER),0) FROM OFFLINE_LECTURE_APPLICATION WHERE OFFLINE_LECTURE_NO=#{offline_lecture_NO} AND APPLICATION_STATUS=1;
+	</select>
+
+	<select id="offlecnumberSumUser" parameterType="java.lang.Integer" resultType="java.lang.Integer">
+		SELECT COALESCE(SUM(APPLICATION_NUMBER),0) FROM OFFLINE_LECTURE_APPLICATION WHERE OFFLINE_LECTURE_NO=#{offline_lecture_NO};
+	</select>
+
+	<select id="offlecnumberSumReject" parameterType="java.lang.Integer" resultType="java.lang.Integer">
+		SELECT COALESCE(SUM(APPLICATION_NUMBER),0) FROM OFFLINE_LECTURE_APPLICATION WHERE OFFLINE_LECTURE_NO=#{offline_lecture_NO} AND APPLICATION_STATUS=2;
+	</select>
+
+	<!-- 강사 아이디 검색 -->
+	<select id="SearchlecturerId" parameterType="java.lang.String" resultType="memberVO">
+		SELECT ID FROM MEMBER_INFO WHERE NAME =#{name}
+	</select>
+	<!-- 강사 이름 검색 -->
+	<select id="SearchlecturerName" parameterType="java.lang.String" resultType="memberVO">
+		SELECT NAME FROM MEMBER_INFO WHERE ID =#{id}
+	</select>
+	<select id="findImg" parameterType="java.lang.String" resultType="java.lang.String">
+		SELECT LECTURER_IMG FROM MEMBER_INFO WHERE ID =#{id}
+	</select>
+
+	<sql id="offline-search">
+		<where>
+			<if test='searchCondition != null and searchCondition != "" and searchCondition =="className"'>
+				<![CDATA[	OFFLINE_LECTURE_NAME LIKE CONCAT('%', TRIM(#{keyword}), '%')	]]>
+			</if>
+		</where>
+	</sql>
+
+
+	<!-- 오프라인 강의 검색  -->
+	<select id="offlecSearch" parameterType="paramVO" resultType="offlineVO">
+				<![CDATA[
+				SELECT *
+				FROM (
+					SELECT @RN:=@RN+1 AS RNUM, A.*
+					FROM (
+						SELECT OFFLINE_LECTURE_NAME
+							, OFFLINE_LECTURE_NO
+							, OFFLINE_LECTURE_IMG
+							, OFFLINE_LECTURE_ADDRESS
+							, ID
+							, OFFLINE_LECTURE_REG
+							FROM OFFLINE_LECTURE
+							WHERE OFFLINE_LECTURE_NAME LIKE CONCAT('%', TRIM(#{keyword}), '%')
+				]]>
+
+				<![CDATA[
+						ORDER BY OFFLINE_LECTURE_REG DESC
+					) A
+				) A
+				limit #{firstRecordIndex}, #{recordCountPerPage}
+			]]>
+	</select>
+
+	<select id="countCname" parameterType="offlineVO" resultType="long">
+		SELECT COUNT(*) CNT FROM OFFLINE_LECTURE
+			WHERE OFFLINE_LECTURE_NAME LIKE CONCAT('%', TRIM(#{keyword}), '%')
+	</select>
+
+	<select id="offlineSearchName" parameterType="paramVO" resultType="offlineVO">
+			<![CDATA[
+				SELECT *
+				FROM (
+					SELECT @RN:=@RN+1 AS RNUM, A.*
+					FROM (
+						select A.OFFLINE_LECTURE_NAME,
+							A.OFFLINE_LECTURE_NO,
+							A.OFFLINE_LECTURE_IMG,
+							A.OFFLINE_LECTURE_ADDRESS,
+							OFFLINE_LECTURE_REG
+							FROM offline_lecture A
+							JOIN MEMBER_INFO B
+							ON A.ID = B.ID
+							WHERE B.NAME LIKE CONCAT('%', TRIM(#{keyword}), '%')
+				]]>
+
+				<![CDATA[
+						ORDER BY OFFLINE_LECTURE_REG DESC
+					) A
+				) A
+				limit #{firstRecordIndex}, #{recordCountPerPage}
+			]]>
+	</select>
+
+	<select id="countNameclass" parameterType="offlineVO" resultType="long">
+			SELECT COUNT(*) CNT FROM offline_lecture A
+			JOIN MEMBER_INFO B
+			ON A.ID = B.ID
+			WHERE B.NAME LIKE CONCAT('%', TRIM(#{keyword}), '%')
+	</select>
+
+	<!-- 현재 아이디에 강의에 대한 신청서가 있는지  -->
+	<!-- 합계가 0이면 조회결과가 없는거 0보다크면 있는거 -->
+	<select id="offapplicationCheck" parameterType="offAplicationVO" resultType="java.lang.Integer">
+		SELECT COALESCE(SUM(APPLICATION_NO),0) FROM OFFLINE_LECTURE_APPLICATION WHERE APPLICATION_ID =#{application_id} AND OFFLINE_LECTURE_NO = #{offline_lecture_NO}
+	</select>
+
+	<!-- 나의 신청서 업데이트 -->
+	<update id="myapplicationUpdate" parameterType="offAplicationVO">
+		UPDATE OFFLINE_LECTURE_APPLICATION
+		SET
+		 APPLICATION_NAME = #{application_name}
+		,APPLICATION_NUMBER = #{application_number}
+		,APPLICATION_PHONE = #{application_phone}
+		,APPLICATION_REGDATE = NOW()
+		,APPLICATION_INTRODUCE = #{application_introduce}
+		,APPLICATION_STATUS = 0
+		WHERE APPLICATION_NO = #{application_no}
+	</update>
+	<!-- 나의 신청서 삭제하기 -->
+	<delete id="myapplicationDelete" parameterType="java.lang.Integer">
+		DELETE FROM OFFLINE_LECTURE_APPLICATION WHERE APPLICATION_NO = #{application_no}
+	</delete>
+
+	<resultMap id="reviewResult" type="reviewVO">
+		<result property="reviewNo" column="REVIEW_NO" />
+		<result property="keyNo" column="KEY_NO" />
+		<result property="keySection" column="KEY_SECTION" />
+		<result property="id" column="ID" />
+		<result property="contents" column="CONTENTS" />
+		<result property="registerDate" column="REGISTER_DATE" />
+	</resultMap>
+
+	<!-- 후기 조회 -->
+	<select id="replyList" parameterType="reviewVO" resultMap="reviewResult">
+		SELECT ID
+			, KEY_NO
+			, KEY_SECTION
+			, CONTENTS
+			, REGISTER_DATE
+			, REVIEW_NO
+			FROM REVIEW WHERE KEY_SECTION = #{keySection} AND KEY_NO = #{keyNo}
+
+	</select>
+
+	<!-- 후기 등록 -->
+	<insert id="replyInsert" parameterType="reviewVO">
+		INSERT INTO REVIEW(
+			ID
+			, KEY_NO
+			, KEY_SECTION
+			, CONTENTS
+			, REGISTER_DATE
+		) VALUES(
+			#{id}
+			, #{keyNo}
+			, #{keySection}
+			, #{contents}
+			, NOW()
+		)
+	</insert>
+
+	<resultMap type="offlineVO" id="offlineResult">
+		<result property="offline_lecture_name" column="OFFLINE_LECTURE_NAME"/>
+		<result property="offline_lecture_img" column="OFFLINE_LECTURE_IMG"/>
+		<result property="offline_lecture_schedule" column="OFFLINE_LECTURE_SCHEDULE"/>
+		<result property="offline_lecture_NO" column="OFFLINE_LECTURE_NO"/>
+		<result property="offline_lecture_applyperiodend" column="OFFLINE_LECTURE_APPLYPERIODEND"/>
+
+		<result property="application_status" column="APPLICATION_STATUS"/>
+		<result property="application_no" column="APPLICATION_NO"/>
+
+	</resultMap>
+
+
+	<!-- 나의 신청강의 리스트 -->
+	<select id="offlineMylecture" parameterType="paramVO" resultMap="offlineResult">
+		<![CDATA[
+				SELECT *
+				FROM (
+					SELECT @RN:=@RN+1 AS RNUM, A.*
+					FROM (
+							SELECT A.OFFLINE_LECTURE_NAME
+							, A.OFFLINE_LECTURE_IMG
+								, A.OFFLINE_LECTURE_SCHEDULE
+								, A.OFFLINE_LECTURE_NO
+								, A.OFFLINE_LECTURE_APPLYPERIODEND
+								, B.APPLICATION_STATUS
+								, B.APPLICATION_NO
+								FROM OFFLINE_LECTURE A
+								JOIN OFFLINE_LECTURE_APPLICATION B
+								on A.OFFLINE_LECTURE_NO = B.OFFLINE_LECTURE_NO
+								WHERE B.APPLICATION_ID = #{id}
+				]]>
+
+				<![CDATA[
+						ORDER BY A.OFFLINE_LECTURE_SCHEDULE DESC
+					) A
+				) A
+				limit #{firstRecordIndex}, #{recordCountPerPage}
+			]]>
+
+	</select>
+
+	<select id="myLectureCount" parameterType="java.lang.String" resultType="long">
+			SELECT COUNT(*) CNT FROM offline_lecture A
+			JOIN OFFLINE_LECTURE_APPLICATION B
+			on A.OFFLINE_LECTURE_NO = B.OFFLINE_LECTURE_NO
+			WHERE B.APPLICATION_ID = #{id};
+	</select>
+
+</mapper>

@@ -1,0 +1,76 @@
+nav{
+  border-bottom: 1px solid #ddd;
+}
+
+/*.nav_ul{
+  width: 1146px;
+  float: left;
+  margin-left: 20px;
+  }*/
+
+  .nav_li{
+  float: left;
+  font-size: 20px;
+  width: 33.333%;
+  text-align: center;
+  padding-top: 30px;
+  padding-bottom: 30px;
+  font-weight: 300;
+
+}
+
+.on{
+  border-bottom: 5px solid #000;
+  font-weight: 500;
+}
+
+
+/*햄버거 메뉴*/
+.hamburger{
+
+    float: left;
+    cursor: pointer;
+    width: 24px;
+    height: 22px;
+    margin-top: 20px;
+  }
+  .hamburger .hams{
+    width: 24px;
+    height: 22px;
+    position: relative;
+    overflow: hidden;
+  }
+  .hamburger .hams .ham{
+    width: 21px;
+    height: 2px;
+    background-color: #000;
+    position: absolute;
+    top:50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+    transition: 0.5s;
+  }
+  .hamburger .hams .ham:before,
+  .hamburger .hams .ham:after{
+    content: "";
+    position: absolute;
+    width: 21px;
+    height: 2px;
+    background-color: #000;
+
+    transition: 0.5s;
+  }
+  .hamburger .hams .ham:before{ top: -7px;}
+  .hamburger .hams .ham:after{ top: 7px;}
+  .hamburger.active .hams .ham{
+    background-color: rgba(0,0,0,0);
+
+  }
+  .hamburger.active .hams .ham:before{
+    top:0;
+    transform: rotate(45deg);
+  }
+  .hamburger.active .hams .ham:after{
+    top:0;
+    transform: rotate(135deg);
+  }

@@ -1,0 +1,158 @@
+#contents{
+  padding-bottom: 200px;
+}
+
+.my_page_contents{
+  float: left;
+  margin-top: 40px;
+  border-radius: 10px;
+  margin-left: 20px;
+  box-shadow:  1px 1px 12px 1px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  width: 864px;
+}
+.lecture_ch{
+  margin-left: 540px;
+
+}
+.lecture_ch_li{
+  float: left;
+  width: 150px;
+  height: 40px;
+  border-radius: 5px;
+  border: 1px solid #ddd;
+  text-align: center;
+  line-height: 40px;
+  margin-left: 10px;
+  color: #999;
+}
+.mg_on{
+  /* background-color: #f6f6f6; */
+  font-weight: 700;
+  border: 1px solid #000;
+  color: #000;
+}
+.onlec_mg_list{
+  margin-top: 50px;
+  margin-bottom: 100px;
+
+}
+
+.review_modal{
+  width: 600px;
+  height: 400px;
+  background-color: #fff;
+  box-shadow:  1px 1px 12px 1px rgba(0, 0, 0, 0.1);
+  position:absolute;
+  top: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  text-align: center;
+  display: none;
+  z-index: 9999;
+}
+.review_title{
+  padding: 15px;
+  text-align: center;
+  background-color: #ddd;
+}
+.review_textarea{
+  width:90%;
+  margin-top: 25px;
+  height: 200px;
+  border: 1px solid #ddd;
+  margin-bottom: 15px;
+}
+
+
+.title{
+  margin-top: 100px;
+  margin-bottom: 50px;
+  width: 100%;
+  border-bottom: 1px solid #333;
+  padding-bottom:15px;
+  padding-left: 5px;
+  color: #333;
+}
+.onlec_myClass{
+  width: 100%;
+}
+.imgBox{
+  width: 200px;
+}
+.onlec_img_box{
+  width: 200px;
+  height: 150px;
+  overflow: hidden;
+  border-radius: 5px;
+}
+.onlec_img_box>img{
+  width: 100%;
+}
+.classBox{
+  width: 150px;
+}
+.goClass{
+  width: 150px;
+  height: 150px;
+  border-radius: 5px;
+  background-color: rgb(255,217,102);
+  text-align: center;
+  line-height: 150px;
+  font-weight: bold;
+  font-size: 18px;
+}
+.lecName{
+  text-align: center;
+  padding: 20px;
+  padding-top: 0px;
+  font-size: 20px;
+}
+
+.myclass_content{
+  padding-left: 20px;
+
+  line-height: 1.8;
+}
+
+.alignRight{
+  text-align: right;
+  color: red;
+  padding-left: 0;
+  padding-right:22px;
+}
+.myClass_list{
+  padding-bottom: 40px;
+  padding-top: 40px;
+  border-bottom: 1px solid #ddd;
+  position: relative;
+}
+.btns{
+  margin-top: 6px;
+  width: 100%;
+}
+.btns_btn{
+  height: 40px;
+  width: 49.75%;
+  background-color: #333;
+  color: #fff;
+  border-radius: 5px;
+  cursor:pointer;
+}
+.point_btn{
+  height: 40px;
+  background-color:rgb(255,217,102);
+  width: 99.75%;
+  border-radius: 5px;
+  font-weight: bold;
+  font-size: 14px;
+  cursor:pointer;
+}
+.rebtn{
+  background-color: rgb(255,217,102);
+  color: #333;
+  font-weight: bold;
+  font-size: 16px;
+  display: inline-block;
+  margin-bottom: 5px;
+}

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sitemesh>
+	<mapping path="/*" decorator="/WEB-INF/jsp/commons/main.jsp"/>
+	<mapping path="/mypage/*" decorator="/WEB-INF/jsp/commons/mypage_sitemash.jsp"/>
+	<mapping path="/mypage/online/*" decorator="/WEB-INF/jsp/commons/mypage_sitemash_online.jsp"/>
+	<mapping path="/admin/*" decorator="/WEB-INF/jsp/commons/admin_sitemash.jsp"/>
+
+
+	<!-- exclue -->
+	<mapping path="/popup/*" exclue="true"/>
+	<mapping path="/offlineClass/offlec_myApplication" exclue="true"/>
+	<mapping path="/mypage/offline/offapli_detail" exclue="true"/>
+	<mapping path="/mypage/offline/close" exclue="true"/>
+	<mapping path="/mypage/member/passwordUpdate" exclue="true"></mapping>
+	<mapping path="/admin/online/lecturerSearch" exclue="true"></mapping>
+	<mapping path="/**/product/getSalesHistoryList" exclue="true"></mapping>
+	<mapping path="/admin/member/memberListPop" exclue="true"></mapping>
+	<mapping path="/admin/offline/findId" exclue="true"/>
+	<mapping path="/admin/offline/findIdAction" exclue="true"/>
+
+</sitemesh>
